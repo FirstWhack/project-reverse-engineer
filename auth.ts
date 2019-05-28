@@ -1,8 +1,10 @@
-// necessary pieces moved to /src
-import { Request } from 'express'
-import * as jwksRsa from 'jwks-rsa';
-import { decode, verify, VerifyOptions } from 'jsonwebtoken'
-import { log } from './log'
+const express = require('express');
+const jwksRsa = require('jwks-rsa');
+const jsonwebtoken = require('jsonwebtoken');
+const decode = jsonwebtoken.decode;
+const verify = jsonwebtoken.verify;
+const VerifyOptions = jsonwebtoken.VerifyOptions;
+const log = console;
 
 const _jwksUri: string = 'https://login.microsoftonline.com/common/discovery/v2.0/keys'
 
@@ -172,7 +174,7 @@ function basic_auth(authString: string): authStatus {
 
 }
 
-export async function authenticate(req: Request, audience?: string, jwksUri?: string): Promise<authStatus> {
+module.exports = async function authenticate(req: Request, audience?: string, jwksUri?: string): Promise<authStatus> {
     if(!jwksUri) jwksUri = _jwksUri
 
     let authString: string = req.headers['authorization']

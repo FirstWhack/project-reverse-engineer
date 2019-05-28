@@ -2,12 +2,15 @@
 *  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
 *  See LICENSE in the source repository root for complete license information.
 */
+require('dotenv').config()
 
 var express = require('express');
 var app = express();
 var morgan = require('morgan');
 var path = require('path');
 var request = require('request');
+
+var authenticate = require('./auth.ts');
 
 // Initialize variables.
 var port = 30662; // process.env.PORT || 30662;
@@ -25,7 +28,11 @@ app.get('/', function (req, res) {
 
 app.get('/proxyKeys', function(req, res) {
     request(req.query.keyUrl).pipe(res);
-})
+});
+
+app.post('/checkRequest', function(req, res) {
+    authenticate(req).then((status) => res.send(status));
+});
 
 // Start the server.
 app.listen(port);
