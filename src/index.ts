@@ -1,101 +1,80 @@
-import validateJWT from "./ValidateJwt";
+import validateJWT from './ValidateJwt';
 import MSALScript from './MSAL.js';
 
 const log = console;
 
 interface S2SBasicInfo {
-  aud: string;
-  exp: string;
+    aud: string;
+    exp: string;
 }
 
 interface S2SFullInfo extends S2SBasicInfo {
-  appid: string;
-  app_displayname: string;
-  upn: string;
-  tid: string;
-  scp: string; // probably this is not a string?
-  ipaddr?: string;
-  name?: string;
-  unique_name?: string;
+    appid: string;
+    app_displayname: string;
+    upn: string;
+    tid: string;
+    scp: string; // probably this is not a string?
+    ipaddr?: string;
+    name?: string;
+    unique_name?: string;
 }
 // Interface that contains the required token information
 export interface S2SAuthInfo {
-  actor: S2SBasicInfo;
-  access: S2SFullInfo;
+    actor: S2SBasicInfo;
+    access: S2SFullInfo;
 }
 
-async function _s2s_auth(
-  authString: string,
-  jwksUri: string,
-  audience: string,
-  ignoreExpiration?: boolean
-): Promise<S2SAuthInfo> {
-  // verify the token starts with MSAuth1.0
-  if (!authString.startsWith("MSAuth1.0 "))
-    throw "Invalid Bearer Token - not S2S";
+async function _s2s_auth(authString: string, jwksUri: string, audience: string, ignoreExpiration?: boolean): Promise<S2SAuthInfo> {
+    // verify the token starts with MSAuth1.0
+    if (!authString.startsWith('MSAuth1.0 ')) throw 'Invalid Bearer Token - not S2S';
 
-  // extract the tokens
-  let tokens: string[] = authString.substr("MSAuth1.0 ".length).split(",");
+    // extract the tokens
+    let tokens: string[] = authString.substr('MSAuth1.0 '.length).split(',');
 
-  // tokens lenght must be 3
-  if (tokens.length !== 3) throw "Invalid Bearer Token - missing field";
+    // tokens lenght must be 3
+    if (tokens.length !== 3) throw 'Invalid Bearer Token - missing field';
 
-  // Make sure types are correct
-  if (!tokens[0].startsWith("actortoken=")) throw "Invalid actor token";
-  if (!tokens[1].startsWith("accesstoken=")) throw "Invalid access token";
-  if (tokens[2] !== 'type="PFAT"') throw "Invalid token type";
+    // Make sure types are correct
+    if (!tokens[0].startsWith('actortoken=')) throw 'Invalid actor token';
+    if (!tokens[1].startsWith('accesstoken=')) throw 'Invalid access token';
+    if (tokens[2] !== 'type="PFAT"') throw 'Invalid token type';
 
-  let actorHeader: string = tokens[0]
-    .substr("actortoken=".length)
-    .replace(/(^")|("$)/g, "");
-  let accessHeader: string = tokens[1]
-    .substr("accesstoken=".length)
-    .replace(/(^")|("$)/g, "");
+    let actorHeader: string = tokens[0].substr('actortoken='.length).replace(/(^")|("$)/g, '');
+    let accessHeader: string = tokens[1].substr('accesstoken='.length).replace(/(^")|("$)/g, '');
 
-  if (!actorHeader.startsWith("Bearer "))
-    throw "Actor token is not of Bearer type";
-  if (!accessHeader.startsWith("Bearer "))
-    throw "Access token is not of Bearer type";
+    if (!actorHeader.startsWith('Bearer ')) throw 'Actor token is not of Bearer type';
+    if (!accessHeader.startsWith('Bearer ')) throw 'Access token is not of Bearer type';
 
-  let actorJWT: string = actorHeader.split(" ")[1];
-  let accessJWT: string = accessHeader.split(" ")[1];
+    let actorJWT: string = actorHeader.split(' ')[1];
+    let accessJWT: string = accessHeader.split(' ')[1];
 
-  let authInfo = {
-    actor: <S2SBasicInfo>{},
-    access: <S2SFullInfo>{}
-  };
+    let authInfo = {
+        actor: <S2SBasicInfo>{},
+        access: <S2SFullInfo>{}
+    };
 
-  try {
-    let verifiedActor: S2SBasicInfo = await validateJWT(
-      actorJWT,
-      jwksUri,
-      ignoreExpiration,
-      audience
-    );
-    authInfo.actor.aud = verifiedActor.aud;
-    authInfo.actor.exp = verifiedActor.exp;
+    try {
+        let verifiedActor: S2SBasicInfo = await validateJWT(actorJWT, jwksUri, ignoreExpiration, audience);
+        authInfo.actor.aud = verifiedActor.aud;
+        authInfo.actor.exp = verifiedActor.exp;
 
-    let verifiedAccess: S2SFullInfo = await validateJWT(
-      accessJWT,
-      jwksUri,
-      ignoreExpiration
-    );
-    authInfo.access.aud = verifiedAccess.aud;
-    authInfo.access.exp = verifiedAccess.exp;
-    authInfo.access.tid = verifiedAccess.tid;
-    authInfo.access.scp = verifiedAccess.scp;
-    authInfo.access.appid = verifiedAccess.appid;
-    authInfo.access.upn = verifiedAccess.upn;
-    authInfo.access.app_displayname = verifiedAccess.app_displayname;
-    authInfo.access.ipaddr = verifiedAccess.ipaddr || undefined;
-    authInfo.access.unique_name = verifiedAccess.unique_name || undefined;
-    authInfo.access.name = verifiedAccess.name || undefined;
-  } catch (err) {
-    log.error("parse_s2s: Cannot Verify Token with error: " + err);
-    throw "parse_s2s: Cannot Verify Token with error: " + err;
-  }
-  console.log("Validated ", authInfo);
-  return authInfo;
+        let verifiedAccess: S2SFullInfo = await validateJWT(accessJWT, jwksUri, ignoreExpiration);
+        authInfo.access.aud = verifiedAccess.aud;
+        authInfo.access.exp = verifiedAccess.exp;
+        authInfo.access.tid = verifiedAccess.tid;
+        authInfo.access.scp = verifiedAccess.scp;
+        authInfo.access.appid = verifiedAccess.appid;
+        authInfo.access.upn = verifiedAccess.upn;
+        authInfo.access.app_displayname = verifiedAccess.app_displayname;
+        authInfo.access.ipaddr = verifiedAccess.ipaddr || undefined;
+        authInfo.access.unique_name = verifiedAccess.unique_name || undefined;
+        authInfo.access.name = verifiedAccess.name || undefined;
+    } catch (err) {
+        log.error('parse_s2s: Cannot Verify Token with error: ' + err);
+        throw 'parse_s2s: Cannot Verify Token with error: ' + err;
+    }
+    console.log('Validated ', authInfo);
+    return authInfo;
 }
 
 MSALScript(_s2s_auth);

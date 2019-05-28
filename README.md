@@ -14,6 +14,7 @@
 
 * I have never integrated anything with Azure AD before, most of MSAL.js came from the examples on MS Docs
 * The prompt said this token should "not error out at any time", it won't unless it's expired.
+* I am not really a typescript guy, in the way of KISS I have only made the .ts files work as TS and wrote my own in vanilla.
 
 
 Thanks!
