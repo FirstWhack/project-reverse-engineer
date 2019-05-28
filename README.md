@@ -4,11 +4,11 @@
 **Running the project:**
 
 * Clone the repository
-* Install the repository (npm i)
-* Build the front end (npm run build)
-* Run the server (the server is only necessary to proxy the request to https://login.microsoftonline.com/common/discovery/v2.0/keys)
+* Install the repository `npm i`
+* Build the front end `npm run build`
+* Run the server `npm run dev`
 * Open the app at localhost:{PORT_SHOWN_IN_BUILD}
-* Sign into any Microsoft account (should work with any organizational directory OR personal account (xbox, Outlook.com, Skype, etc. . .))
+* Sign into any Microsoft account (should work with any organizational directory or personal account)
 
 **My brief notes**
 
