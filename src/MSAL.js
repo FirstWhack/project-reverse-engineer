@@ -33,7 +33,7 @@ export default function(_s2s_auth) {
     // myMSALObj.handleRedirectCallbacks(acquireTokenRedirectCallBack, acquireTokenErrorRedirectCallBack);
     myMSALObj.handleRedirectCallback(authRedirectCallBack);
 
-    function signIn() {
+    window.signIn = function() {
         myMSALObj.loginPopup(requestObj).then(function (loginResponse) {
             //Successful login
             showWelcomeMessage();
@@ -68,13 +68,12 @@ export default function(_s2s_auth) {
             }
         });
     }
-
     function showWelcomeMessage() {
         var divWelcome = document.getElementById('WelcomeMessage');
         divWelcome.innerHTML = "Welcome " + myMSALObj.getAccount().userName + " to Your Test App";
         var loginbutton = document.getElementById('SignIn');
         loginbutton.innerHTML = 'Sign Out';
-        loginbutton.setAttribute('onclick', 'signOut();');
+        loginbutton.addEventListener('click', signOut);
     }
 
     function authRedirectCallBack(error, response) {
