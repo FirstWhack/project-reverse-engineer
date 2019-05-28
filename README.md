@@ -1,16 +1,18 @@
 # Contrast Project API Reverse Engineering
 
-Thank you for your interest in joining Contrast Security.
 
-**Your project is to:**
+**Running the project:**
 
-* In auth.ts, read and understand the function `async function _s2s_auth` (line 95)
-* Construct a valid authString that would allow the function to succeed and not error out at any time.
+* Clone the repository
+* Install the repository (npm i)
+* Build the front end (npm run build)
+* Run the server (the server is only necessary to proxy the request to https://login.microsoftonline.com/common/discovery/v2.0/keys)
+* Open the app at localhost:{PORT_SHOWN_IN_BUILD}
 
-**Some notes**
+**My brief notes**
 
-* The Typescript example will not run as-is. There's no need to get it running to work on the project.
-* You don't need to actually write code to fulfill this project. A valid authString will do.
-* But you're welcome to write code if you want.
+* I have never integrated anything with Azure AD before, most of MSAL.js came from the examples on MS Docs
+* The prompt said this token should "not error out at any time", it won't unless it's expired.
+
 
 Thanks!

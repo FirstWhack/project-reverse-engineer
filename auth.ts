@@ -1,3 +1,4 @@
+// necessary pieces moved to /src
 import { Request } from 'express'
 import * as jwksRsa from 'jwks-rsa';
 import { decode, verify, VerifyOptions } from 'jsonwebtoken'
